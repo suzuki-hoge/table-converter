@@ -1,3 +1,22 @@
+" 事前チェック等
+if !exists('g:table_convert_root_path')
+    echo 'table-converter/vim/commands.vim を読み込む前に g:table_convert_root_path を定義する必要があります'
+    echo 'ex)'
+    echo "let g:table_convert_root_path = '/Users/xxx/path/to/dir/table-converter'"
+    finish
+endif
+
+let s:toMarkdown = g:table_convert_root_path . '/api/to-markdown.py'
+let s:toCsv      = g:table_convert_root_path . '/api/to-csv.py'
+
+if !executable(s:toMarkdown)
+    echo s:toMarkdown . ' がみつかりません g:table_convert_root_path の設定を見直してください'
+    echo 'g:table_convert_root_path -> ' . g:table_convert_root_path
+    finish
+endif
+
+
+" コマンド定義
 command! -range                         ShowMarkdown           <line1>,<line2>call ShowMarkdown()
 command! -range                         ToMarkdown             <line1>,<line2>call s:insert(s:toMarkdown)
 command!        -nargs=1 -complete=file AppendMarkdownFromFile                call AppendMarkdownFromFile(<f-args>)
@@ -6,11 +25,7 @@ command! -range                         ToCsv                  <line1>,<line2>ca
 command! -range -nargs=1 -complete=file WriteCsvToFile         <line1>,<line2>call WriteCsvToFile(<f-args>)
 
 
-" todo bug
-let s:toMarkdown = fnamemodify('.', ':p') . '../api/to-markdown.py'
-let s:toCsv = fnamemodify('.', ':p') . '../api/to-csv.py'
-
-
+" 関数定義
 function! ShowMarkdown() range
     echo s:getResponse(a:firstline, a:lastline, s:toMarkdown)
 endfunction
@@ -47,8 +62,8 @@ function! WriteCsvToFile(path) range
 
     if s:isValidResponse(response)
         let lines = split(response, '\n')
-		call writefile(lines, a:path)
-		echo 'write: ' . a:path
+        call writefile(lines, a:path)
+        echo 'write: ' . a:path
     else
         echo response
     endif
