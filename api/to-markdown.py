@@ -12,12 +12,20 @@ def dummy():
             'MGS2,Raiden,Solidus Snake',
             'MGS3,Naked Snake,The Boss']
 
+def empty():
+    return []
+
+def invalidCols():
+    return ['a, b', 'c, d, e', 'f, g']
+
 def stdin():
     [line.strip() for line in sys.stdin.readlines()]
 
-lines = getLines(dummy)
+lines = getLines(invalidCols)
 
 from converter import toMarkdown
 
-markdown = toMarkdown(lines)
-print markdown
+try:
+    print toMarkdown(lines)
+except AssertionError, e:
+    print e

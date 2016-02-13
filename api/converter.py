@@ -1,4 +1,8 @@
+from validator import isValid
+
 def toMarkdown(lines):
+    isValid(lines)
+
     header = _header(lines)
     aligns = _aligns(header)
     body = _body(lines)
