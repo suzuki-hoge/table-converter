@@ -7,7 +7,11 @@ endfunction
 
 function! ToMarkdown() range
     let markdown = s:getMarkdown(a:firstline, a:lastline)
-    call s:updateLines(a:firstline, a:lastline, markdown)
+    if s:isValidResponse(markdown)
+        call s:updateLines(a:firstline, a:lastline, markdown)
+    else
+        echo markdown
+    endif
 endfunction
 
 function! s:getMarkdown(first, last)
@@ -31,4 +35,8 @@ function! s:updateLines(first, last, markdown)
         call setline(linenum, lines[linenum - a:first])
     endfor
     call append(a:last, lines[-1])
+endfunction
+
+function! s:isValidResponse(markdown)
+    return split(a:markdown, '\n')[0] !~# '^to-markdown.py error:'
 endfunction

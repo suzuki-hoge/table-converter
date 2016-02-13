@@ -72,7 +72,7 @@ test(
 # empty input
 test(
         [],
-        ['input csv is empty']
+		['to-markdown.py error: input csv is empty']
 )
     
 # deviated columns
@@ -85,7 +85,7 @@ test(
             'e8'
         ],
         [
-            'not match each colmun count',
+			'to-markdown.py error: not match each colmun count',
             ' 2: h1,h2',
             ' 2: e1,e2',
             ' 3: e3,e4,e5',
