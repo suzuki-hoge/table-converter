@@ -4,21 +4,27 @@ import sys
 sys.dont_write_bytecode = True
 
 import os.path
-toolPath = "%s/%s" % (os.path.dirname(os.path.abspath(__file__)), 'to-markdown.py')
+toMarkdown = "%s/%s" % (os.path.dirname(os.path.abspath(__file__)), 'to-markdown.py')
+toCsv = "%s/%s" % (os.path.dirname(os.path.abspath(__file__)), 'to-csv.py')
 
 import commands
 
-def _mkCsv(lines):
-    return r'\\n'.join(lines)
+def testToMarkdown(inLines, expectedLines):
+    _test(toMarkdown, inLines, expectedLines)
 
-def test(inLines, expectedLines):
-    csv = _mkCsv(inLines)
-    markdown = commands.getoutput('echo "%s" | python %s' % (csv, toolPath))
-    expeced = '\n'.join(expectedLines)
-    assert markdown == expeced, '\n\nmarkdown:\n%s\n\nexpected:\n%s' % (markdown, expeced)
+def testToCsv(inLines, expectedLines):
+    _test(toCsv, inLines, expectedLines)
+
+def _test(toolPath, inLines, expectedLines):
+    inLine = r'\\n'.join(inLines)
+    expectedLine = '\n'.join(expectedLines)
+
+    response = commands.getoutput('echo "%s" | python %s' % (inLine, toolPath))
+
+    assert response == expectedLine, '\n\nresponse:\n%s\n\nexpected:\n%s' % (response, expectedLine)
     
 # main
-test(
+testToMarkdown(
         [
             'header1,header2',
             'element1,element2',
@@ -33,7 +39,7 @@ test(
 )
     
 # trim
-test(
+testToMarkdown(
         [
             'header1,      header2',
             'element1,  element2',
@@ -46,7 +52,7 @@ test(
 )
     
 # one row
-test(
+testToMarkdown(
         [
             'header1,header2'
         ],
@@ -57,7 +63,7 @@ test(
 )
     
 # short cols
-test(
+testToMarkdown(
         [
             'h1,h2',
             'e1,e2',
@@ -70,13 +76,13 @@ test(
 )
     
 # empty input
-test(
+testToMarkdown(
         [],
-		['to-markdown.py error: input csv is empty']
+		['error at api: input is empty']
 )
     
 # deviated columns
-test(
+testToMarkdown(
         [
             'h1,h2',
             'e1,e2',
@@ -85,11 +91,56 @@ test(
             'e8'
         ],
         [
-			'to-markdown.py error: not match each colmun count',
+			'error at api: not match each colmun count',
             ' 2: h1,h2',
             ' 2: e1,e2',
             ' 3: e3,e4,e5',
             ' 2: e6,e7',
             ' 1: e8'
         ]
+)
+
+# main
+testToCsv(
+        [
+            'header1  | header2 ',
+            ':--      | :--     ',
+            'element1 | element2',
+            'element3 | element4',
+        ],
+        [
+            'header1,header2',
+            'element1,element2',
+            'element3,element4',
+        ]
+)
+
+# empty input
+testToCsv(
+        [],
+		['error at api: input is empty']
+)
+
+# deviated columns
+testToCsv(
+        [
+            'h1  | h2 ',
+            ':-- | :--',
+            'e1  | e2  | e3'
+        ],
+        [
+			'error at api: not match each colmun count',
+            ' 2: h1  | h2',
+            ' 2: :-- | :--',
+            ' 3: e1  | e2  | e3'
+        ]
+)
+
+# no aligns line
+testToCsv(
+        [
+            'h1 | h2',
+            'e1 | e2'
+        ],
+        ['error at api: no aligns line']
 )
