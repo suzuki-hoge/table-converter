@@ -1,17 +1,17 @@
 " 事前チェック等
-if !exists('g:table_convert_root_path')
-    echo 'table-converter/vim/commands.vim を読み込む前に g:table_convert_root_path を定義する必要があります'
+if !exists('g:table_converter_root_path')
+    echo 'table-converter/vim/commands.vim を読み込む前に g:table_converter_root_path を定義する必要があります'
     echo 'ex)'
-    echo "let g:table_convert_root_path = '/Users/xxx/path/to/dir/table-converter'"
+    echo "let g:table_converter_root_path = '/Users/xxx/path/to/dir/table-converter'"
     finish
 endif
 
-let s:toMarkdown = g:table_convert_root_path . '/api/to-markdown.py'
-let s:toCsv      = g:table_convert_root_path . '/api/to-csv.py'
+let s:toMarkdown = g:table_converter_root_path . '/api/to-markdown.py'
+let s:toCsv      = g:table_converter_root_path . '/api/to-csv.py'
 
 if !executable(s:toMarkdown)
-    echo s:toMarkdown . ' がみつかりません g:table_convert_root_path の設定を見直してください'
-    echo 'g:table_convert_root_path -> ' . g:table_convert_root_path
+    echo s:toMarkdown . ' がみつかりません g:table_converter_root_path の設定を見直してください'
+    echo 'g:table_converter_root_path -> ' . g:table_converter_root_path
     finish
 endif
 
@@ -35,10 +35,11 @@ function! s:insert(toolPath) range
     let response = s:getResponse(a:firstline, a:lastline, a:toolPath)
 
     if s:isValidResponse(response)
-        let lines = split(response, '\n') + ['']
+		let origin = getpos('.')
+        let lines = split(response, '\n')
         exec 'normal ' . (a:lastline - a:firstline + 1) . 'dd'
-        call append(a:firstline, lines)
-        exec 'normal dd'
+        call append(line('.') - 1, lines)
+		call setpos('.', origin)
     else
         echo response
     endif
