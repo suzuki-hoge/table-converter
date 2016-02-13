@@ -19,13 +19,15 @@ def invalidCols():
     return ['a, b', 'c, d, e', 'f, g']
 
 def stdin():
-    [line.strip() for line in sys.stdin.readlines()]
+    return [line.strip() for line in sys.stdin.readlines()]
 
-lines = getLines(invalidCols)
+lines = getLines(dummy)
 
 from converter import toMarkdown
+from aligner import align
 
 try:
-    print toMarkdown(lines)
+    markdown = toMarkdown(lines)
+    print align(markdown)
 except AssertionError, e:
     print e

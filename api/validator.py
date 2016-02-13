@@ -7,4 +7,5 @@ def _isEmpty(lines):
 
 def _isValidCols(lines):
     colCounts = [line.count(',') for line in lines]
-    assert reduce(lambda x, y: x == y, colCounts), 'not match each colmun count\n' + '\n'.join(["%2s: %s" % (t[0], t[1]) for t in zip(colCounts, lines)])
+    assert all([colCounts[0] == colCount for colCount in colCounts[1:]]), 'not match each colmun count\n' + '\n'.join(["%2s: %s" % (t[0], t[1]) for t in zip(colCounts, lines)])
+
