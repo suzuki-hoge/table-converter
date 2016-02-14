@@ -1,4 +1,5 @@
 #!/bin/env python2.7
+# -*- coding: utf-8 -*-
 
 import sys
 sys.dont_write_bytecode = True
@@ -22,35 +23,35 @@ def _test(toolPath, inLines, expectedLines):
     response = commands.getoutput('echo "%s" | python %s' % (inLine, toolPath))
 
     assert response == expectedLine, '\n\nresponse:\n%s\n\nexpected:\n%s' % (response, expectedLine)
-    
+
 # main
 testToMarkdown(
         [
             'header1,header2',
             'element1,element2',
-            'element3,element4',
+            'element3,element4'
         ],
         [
             'header1  | header2 ',
             ':--      | :--     ',
             'element1 | element2',
-            'element3 | element4',
+            'element3 | element4'
         ]
 )
-    
+
 # trim
 testToMarkdown(
         [
             'header1,      header2',
-            'element1,  element2',
+            'element1,  element2'
         ],
         [
             'header1  | header2 ',
             ':--      | :--     ',
-            'element1 | element2',
+            'element1 | element2'
         ]
 )
-    
+
 # one row
 testToMarkdown(
         [
@@ -61,12 +62,12 @@ testToMarkdown(
             ':--     | :--    '
         ]
 )
-    
+
 # short cols
 testToMarkdown(
         [
             'h1,h2',
-            'e1,e2',
+            'e1,e2'
         ],
         [
             'h1  | h2 ',
@@ -74,13 +75,43 @@ testToMarkdown(
             'e1  | e2 '
         ]
 )
-    
+
+# empty element
+testToMarkdown(
+        [
+            'h1,h2',
+            ',e2',
+            'e3,'
+        ],
+        [
+            'h1  | h2 ',
+            ':-- | :--',
+            '    | e2 ',
+            'e3  |    '
+        ]
+)
+
+# マルチバイト
+testToMarkdown(
+        [
+            'ヘッダ１,ヘッダ２',
+            '要素１,要素２',
+            '要素3,要素4'
+        ],
+        [
+            'ヘッダ１ | ヘッダ２',
+            ':--      | :--     ',
+            '要素１   | 要素２  ',
+            '要素3    | 要素4   '
+        ]
+)
+
 # empty input
 testToMarkdown(
         [],
-		['error at api: input is empty']
+        ['error at api: input is empty']
 )
-    
+
 # deviated columns
 testToMarkdown(
         [
@@ -91,7 +122,7 @@ testToMarkdown(
             'e8'
         ],
         [
-			'error at api: not match each colmun count',
+            'error at api: not match each colmun count',
             ' 2: h1,h2',
             ' 2: e1,e2',
             ' 3: e3,e4,e5',
@@ -106,19 +137,19 @@ testToCsv(
             'header1  | header2 ',
             ':--      | :--     ',
             'element1 | element2',
-            'element3 | element4',
+            'element3 | element4'
         ],
         [
             'header1,header2',
             'element1,element2',
-            'element3,element4',
+            'element3,element4'
         ]
 )
 
 # empty input
 testToCsv(
         [],
-		['error at api: input is empty']
+        ['error at api: input is empty']
 )
 
 # deviated columns
@@ -129,7 +160,7 @@ testToCsv(
             'e1  | e2  | e3'
         ],
         [
-			'error at api: not match each colmun count',
+            'error at api: not match each colmun count',
             ' 2: h1  | h2',
             ' 2: :-- | :--',
             ' 3: e1  | e2  | e3'
