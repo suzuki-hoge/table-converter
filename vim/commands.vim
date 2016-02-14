@@ -37,6 +37,9 @@ function! s:insert(toolPath) range
     if s:isValidResponse(response)
 		let origin = getpos('.')
         let lines = split(response, '\n')
+		if line('$') == a:lastline
+			call append(line('$'), '')
+		endif
         exec 'normal ' . (a:lastline - a:firstline + 1) . 'dd'
         call append(line('.') - 1, lines)
 		call setpos('.', origin)

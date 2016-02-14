@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 def align(lines):
     colsList = [line.split('|') for line in lines]
     maxWidths = _maxWidths(colsList)
+    print maxWidths
     filledColsList = [_fill(cols, maxWidths) for cols in colsList]
     return '\n'.join([' | '.join(filledCols) for filledCols in filledColsList])
 
@@ -11,3 +14,5 @@ def _maxWidths(colsList):
  
 def _fill(cols, maxWidths):
     return [(col + ' ' * maxWidth)[:maxWidth] for col, maxWidth in zip(cols, maxWidths)]
+
+align(['あ|う', ':--|:--', 'aaあ|uuう'])
