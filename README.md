@@ -3,7 +3,7 @@ Vim上で`csv`と`markdownのテーブル記法`の相互変換を行うVimプ�
 
 ## 初期設定
 ### スクリプト取得
-`$ git clone https://github.com/tenshiPure/table-converter.git`
+`$ git clone https://github.com/suzuki-hoge/table-converter.git`
 
 ### vimの設定ファイル(~/.vimrc)に設定を追記
 ```VimScript:~/.vimrc
